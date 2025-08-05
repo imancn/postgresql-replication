@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres-primary:
+    image: postgres:15
+    container_name: postgres-primary
+    environment:
+      POSTGRES_DB: postgres-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecret
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_primary_data:/var/lib/postgresql/data
+      - ./primary/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./primary/pg_hba.conf:/etc/postgresql/pg_hba.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+
+  postgres-subscriber:
+    image: postgres:15
+    container_name: postgres-subscriber
+    environment:
+      POSTGRES_DB: replication-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecret
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_subscriber_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_primary_data:
+  postgres_subscriber_data:
