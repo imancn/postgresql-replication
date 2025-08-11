@@ -1,6 +1,6 @@
-# 🐘 PostgreSQL Logical Replication – Local Docker Demo
+# Central read-only PostgreSQL via logical replication for real-time Metabase visualization without external tools 🐘
 
-<iframe src="https://imancn.github.io/diagram/02_postgresql-3to1-funnel-metabase.html" width="100%" height="600" style="border:none;"></iframe>
+![architecture](postgres_replication_diagram.gif)
 
 ---
 
