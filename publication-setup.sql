@@ -1,9 +1,9 @@
 -- publication-setup.sql
--- Run this on the PRIMARY server (172.31.40.112) connected to DB: "accounting-db-v1"
+-- Run this on the PRIMARY server connected to DB: "iman-db"
 -- Make sure to restart PostgreSQL after ALTER SYSTEM changes for them to take effect.
 
 -- Optional: switch DB in psql/DataGrip if needed
--- \c "accounting-db-v1"
+-- \c "iman-dd"
 
 -- 1) Ensure logical replication prerequisites (requires server RESTART to apply)
 ALTER SYSTEM SET wal_level = 'logical';
@@ -36,8 +36,8 @@ CREATE SCHEMA IF NOT EXISTS "iman-db";
 DO $$
 BEGIN
   -- If an older/different publication name exists, you may drop it (optional)
-  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'pub_accounting_v1') THEN
-    EXECUTE 'DROP PUBLICATION pub_accounting_v1';
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'pub_iman') THEN
+    EXECUTE 'DROP PUBLICATION pub_iman';
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'pub_iman') THEN

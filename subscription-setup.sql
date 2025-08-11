@@ -1,8 +1,8 @@
 -- subscription-setup.sql
--- Run this on the SUBSCRIBER server (172.31.40.133) connected to DB: "supervisor-db-v1"
+-- Run this on the SUBSCRIBER server connected to DB: "central"
 
 -- Optional: switch DB in psql/DataGrip if needed
--- \c "supervisor-db-v1"
+-- \c "central"
 
 -- 0) Ensure target schema (and **matching tables**) exist.
 --    Logical replication does NOT create tables automatically.
