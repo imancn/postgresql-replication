@@ -1,6 +1,6 @@
 # 🐘 PostgreSQL Logical Replication – Local Docker Demo
 
-![architecture](https://www.plantuml.com/plantuml/svg/ROunJiGm44NxESLeAoZs0YdGYco110LeJp0amoQoFROyDXAS7iVsHa9G_ddFt_-aYMBApWA8dnaFhrxJDVBbxUM0f1XQr4xF_CxVQtPuzqmVXd3q8Zob--hE7NQt6O_H6uwLc-tGuMZNoJpvh8oNLSo_VTEY1VrvqDWMboq2t3RYyVYmZnXmef1ov593ScK5kA7grJ43XgmBZkSH-PCb5QdUgz6-BprUD3l-PJNMj7t9W1I2_SAP4W6SMERix0y0)
+<iframe src="https://imancn.github.io/diagram/02_postgresql-3to1-funnel-metabase.html" width="100%" height="600" style="border:none;"></iframe>
 
 ---
 
