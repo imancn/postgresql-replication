@@ -15,36 +15,6 @@ Why this matters:
 
 ---
 
-## 🏗 Architecture
-
-```plantuml
-@startuml
-database "Postgres Primary (5433)" as P
-database "Postgres Subscriber (5434)" as S
-P -down-> S : Logical Replication (publication/subscription)\nvia Docker network
-@enduml
-```
-
-- **Primary**: `postgres-db` database on **port 5433** (localhost)
-- **Subscriber**: `replication-db` database on **port 5434** (localhost)
-- **Replication**: Asynchronous, real-time **logical replication** (publication/subscription model)
-
----
-
-## 📂 Project Structure
-
-```
-.
-├── docker-compose.yml          # Defines the two PostgreSQL services + shared network
-├── setup.sh                    # Orchestrates everything: start DBs, set up replication, run tests
-├── primary/
-│   ├── postgresql.conf          # Primary DB settings (logical replication enabled)
-│   └── pg_hba.conf              # Host-based access control for replication connections
-└── schema.sql                   # Auto-generated schema dump for replication verification
-```
-
----
-
 ## ⚡ Usage (Quickstart)
 
 **Requirements:**
@@ -73,6 +43,79 @@ chmod +x setup.sh
 ### 4. Run the setup
 ```bash
 ./setup.sh
+```
+
+---
+
+## 📝 Example Output
+```
+🧹 Cleaning up previous setup...
+
+🚀 Starting Postgres containers...
+
+⏳ Waiting for databases to become ready...
+
+📦 Creating test tables in primary if missing...
+
+✅ SUCCESS: Data replicated! 'test_replication_1754397274' found in subscriber.
+
+➕ Inserting 100 rows into 'replication_bulk' on primary...
+✅ Insert test: 100 rows successfully replicated to subscriber.
+✅ Update test: All 100 rows were updated and replicated.
+✅ Delete test: All rows deleted in subscriber.
+
+🎉 All massive replication tests passed!
+```
+
+---
+
+## 📂 SQL Setup Files
+
+For manual database setup (without running `setup.sh`), you can use:
+
+**`publication-setup.sql`** (Run on PRIMARY)
+- Configures logical replication parameters
+- Creates replication user
+- Creates publication for target schema/tables
+
+**`subscription-setup.sql`** (Run on SUBSCRIBER)
+- Ensures matching schema/tables exist
+- Creates subscription to the primary’s publication
+
+Example:
+```bash
+psql -h localhost -p 5433 -U postgres -d postgres-db -f publication-setup.sql
+psql -h localhost -p 5434 -U postgres -d replication-db -f subscription-setup.sql
+```
+
+---
+
+## 🏗 Architecture
+
+```plantuml
+@startuml
+database "Postgres Primary (5433)" as P
+database "Postgres Subscriber (5434)" as S
+P -down-> S : Logical Replication (publication/subscription)\nvia Docker network
+@enduml
+```
+
+- **Primary**: `postgres-db` database on **port 5433** (localhost)
+- **Subscriber**: `replication-db` database on **port 5434** (localhost)
+- **Replication**: Asynchronous, real-time **logical replication** (publication/subscription model)
+
+---
+
+## 📂 Project Structure
+
+```
+.
+├── docker-compose.yml          # Defines the two PostgreSQL services + shared network
+├── setup.sh                    # Orchestrates everything: start DBs, set up replication, run tests
+├── primary/
+│   ├── postgresql.conf          # Primary DB settings (logical replication enabled)
+│   └── pg_hba.conf              # Host-based access control for replication connections
+└── schema.sql                   # Auto-generated schema dump for replication verification
 ```
 
 ---
@@ -129,33 +172,6 @@ host    all             postgres        0.0.0.0/0               md5
 
 ---
 
-## 📝 Example Output
-```
-🧹 Cleaning up previous setup...
-
-🚀 Starting Postgres containers...
-
-⏳ Waiting for databases to become ready...
-
-📦 Creating test tables in primary if missing...
-
-✅ SUCCESS: Data replicated! 'test_replication_1754397274' found in subscriber.
-
-➕ Inserting 100 rows into 'replication_bulk' on primary...
-✅ Insert test: 100 rows successfully replicated to subscriber.
-✅ Update test: All 100 rows were updated and replicated.
-✅ Delete test: All rows deleted in subscriber.
-
-🎉 All massive replication tests passed!
-```
-
----
-
-## 📜 License
-MIT (or your preferred license)
-
----
-
 ## 📚 Quick Reference Guide (INSTRUCTION.md style)
 
 ### 1. Prerequisites
@@ -180,24 +196,3 @@ docker compose down -v   # Stop and remove all containers + volumes
 - Add tables → Edit `setup.sh` before publication/subscription creation.
 - Change DB credentials → Edit variables in `setup.sh` and `docker-compose.yml`.
 - Adjust replication behavior → See PostgreSQL logical replication docs.
-
----
-
-## 📂 SQL Setup Files
-
-For manual database setup (without running `setup.sh`), you can use:
-
-**`publication-setup.sql`** (Run on PRIMARY)
-- Configures logical replication parameters
-- Creates replication user
-- Creates publication for target schema/tables
-
-**`subscription-setup.sql`** (Run on SUBSCRIBER)
-- Ensures matching schema/tables exist
-- Creates subscription to the primary’s publication
-
-Example:
-```bash
-psql -h localhost -p 5433 -U postgres -d postgres-db -f publication-setup.sql
-psql -h localhost -p 5434 -U postgres -d replication-db -f subscription-setup.sql
-```
